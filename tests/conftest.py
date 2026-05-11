@@ -1,7 +1,5 @@
 """Test configuration: force safe defaults regardless of .env or shell environment."""
 
-import os
-
 import pytest
 
 

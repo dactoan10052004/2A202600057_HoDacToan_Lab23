@@ -198,11 +198,11 @@ def _is_definition_question(query: str) -> bool:
 
 
 def _is_self_recipient(query: str) -> bool:
-    """Return True when the user is the recipient — they want to RECEIVE data, not trigger an action.
+    """Return True when the user is the recipient (RECEIVE data, not trigger an action).
 
-    'Send me my invoice' → user wants retrieval → tool, not risky outbound action.
-    'Drop me a message' → user wants a notification → simple.
-    Based on Semantic Role Labeling research: Arg2 (recipient) = first/second person pronoun
+    'Send me my invoice' → retrieval → tool, not risky outbound action.
+    'Drop me a message' → notification → simple.
+    Based on SRL research: Arg2 (recipient) = first/second person pronoun
     indicates inbound retrieval intent rather than outbound destructive action.
     """
     return any(p.search(query) for p in _SELF_RECIPIENT_PATTERNS)
@@ -292,7 +292,7 @@ def _keyword_classify(state: AgentState) -> dict:
                 "events": [make_event("classify", "completed", "route=error (ui-element)")],
             }
 
-        # Filter 3: passive voice + explicit system/auto agent → system-caused event, not user action
+        # Filter 3: passive voice + explicit system/auto agent → system-caused event, not user action  # noqa: E501
         if _is_passive_risky(query) and bool(token_set & _SYSTEM_AGENTS):
             return {
                 "route": Route.ERROR.value,
