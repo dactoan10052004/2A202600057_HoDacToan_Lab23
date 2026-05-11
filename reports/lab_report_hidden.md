@@ -1,46 +1,10 @@
-# ruff: noqa: E501
-"""Report generation — auto-fills the lab report template from MetricsReport data."""
-
-from __future__ import annotations
-
-import datetime
-from pathlib import Path
-
-from .metrics import MetricsReport
-
-
-def _scenario_table(metrics: MetricsReport) -> str:
-    header = "| Scenario | Expected route | Actual route | Success | Retries | Interrupts | Latency ms |\n"
-    header += "|---|---|---|:---:|:---:|:---:|---:|\n"
-    rows = []
-    for s in metrics.scenario_metrics:
-        ok = "✅" if s.success else "❌"
-        rows.append(
-            f"| {s.scenario_id} | {s.expected_route} | {s.actual_route or '—'} "
-            f"| {ok} | {s.retry_count} | {s.interrupt_count} | {s.latency_ms} |"
-        )
-    return header + "\n".join(rows)
-
-
-def render_report(metrics: MetricsReport) -> str:
-    """Render a complete lab report from MetricsReport data."""
-    today = datetime.date.today().isoformat()
-    scenario_table = _scenario_table(metrics)
-    resume_note = (
-        "SQLite checkpointer with WAL mode (`PRAGMA journal_mode=WAL`) is used for all HITL "
-        "and time-travel runs. State history retrieved via `graph.get_state_history()` confirms "
-        "that checkpoints survive graph re-instantiation across Streamlit reruns."
-        if metrics.resume_success
-        else "MemorySaver was used for core scenarios. See extension section for SQLite evidence."
-    )
-
-    return f"""# Day 08 Lab Report
+# Day 08 Lab Report
 
 ## 1. Team / student
 
 - **Name**: Ho Dac Toan
 - **Student ID**: 2A202600057
-- **Date**: {today}
+- **Date**: 2026-05-11
 
 ## 2. Architecture
 
@@ -74,7 +38,7 @@ This reduces LLM calls from 100% to ~20% of queries while maintaining 100% class
 Other key decisions:
 - **Bounded retry loop**: `route_after_retry` gates on `attempt >= max_attempts` → dead_letter.
 - **HITL interrupt/resume**: `approval_node` calls `interrupt()` when `LANGGRAPH_INTERRUPT=true`,
-  pausing graph execution until `Command(resume={{...}})` is received from the human reviewer.
+  pausing graph execution until `Command(resume={...})` is received from the human reviewer.
 - **Append-only audit trail**: `messages`, `tool_results`, `errors`, `events` use
   `Annotated[list, add]` reducers so every retry and approval decision is preserved.
 
@@ -98,17 +62,33 @@ Other key decisions:
 ## 4. Scenario results
 
 > Keyword-only mode (`USE_LLM=false`). Scenarios marked `requires_llm=true` are skipped automatically.
-> The table below shows the {metrics.total_scenarios} scenarios executed.
+> The table below shows the 15 scenarios executed.
 
-{scenario_table}
+| Scenario | Expected route | Actual route | Success | Retries | Interrupts | Latency ms |
+|---|---|---|:---:|:---:|:---:|---:|
+| G01_simple | simple | simple | ✅ | 0 | 0 | 10 |
+| G02_simple2 | simple | simple | ✅ | 0 | 0 | 6 |
+| G03_tool | tool | tool | ✅ | 0 | 0 | 8 |
+| G04_tool2 | tool | tool | ✅ | 0 | 0 | 6 |
+| G05_tool3 | tool | tool | ✅ | 0 | 0 | 7 |
+| G06_missing | missing_info | missing_info | ✅ | 0 | 0 | 5 |
+| G07_missing2 | missing_info | missing_info | ✅ | 0 | 0 | 4 |
+| G08_risky | risky | risky | ✅ | 0 | 1 | 9 |
+| G09_risky2 | risky | risky | ✅ | 0 | 1 | 9 |
+| G10_risky3 | risky | risky | ✅ | 0 | 1 | 8 |
+| G11_risky4 | risky | risky | ✅ | 0 | 1 | 8 |
+| G12_error | error | error | ✅ | 2 | 0 | 10 |
+| G13_error2 | error | error | ✅ | 2 | 0 | 11 |
+| G14_dead | error | error | ✅ | 1 | 0 | 7 |
+| G15_mixed | risky | risky | ✅ | 0 | 1 | 9 |
 
 **Summary** (keyword-only mode, `USE_LLM=false`):
-- Scenarios run: **{metrics.total_scenarios}** (of 50 total)
-- Success rate: **{metrics.success_rate:.2%}**
-- Average nodes visited: **{metrics.avg_nodes_visited:.2f}**
-- Total retries: **{metrics.total_retries}**
-- Total interrupts (HITL): **{metrics.total_interrupts}**
-- Resume / state history demonstrated: **{metrics.resume_success}**
+- Scenarios run: **15** (of 50 total)
+- Success rate: **100.00%**
+- Average nodes visited: **6.60**
+- Total retries: **5**
+- Total interrupts (HITL): **5**
+- Resume / state history demonstrated: **True**
 
 ## 5. Failure analysis
 
@@ -124,7 +104,7 @@ would write to a DLQ (SQS, Redis stream) and trigger a PagerDuty alert.
 
 ### Failure mode 2: Risky action rejected by reviewer
 
-When `approval_node` receives `approved=False` via `Command(resume={{...}})`, `route_after_approval`
+When `approval_node` receives `approved=False` via `Command(resume={...})`, `route_after_approval`
 routes to `clarify` instead of `tool`, preventing any side-effectful action (refund, delete, send)
 from executing. The graph still terminates cleanly via `clarify → finalize → END`.
 
@@ -144,9 +124,9 @@ detection. 7 adversarial scenarios (S38–S44) specifically target these blind s
 
 ## 6. Persistence / recovery evidence
 
-{resume_note}
+SQLite checkpointer with WAL mode (`PRAGMA journal_mode=WAL`) is used for all HITL and time-travel runs. State history retrieved via `graph.get_state_history()` confirms that checkpoints survive graph re-instantiation across Streamlit reruns.
 
-Each scenario run uses a unique `thread_id = "thread-{{scenario_id}}"`, isolating checkpoints per
+Each scenario run uses a unique `thread_id = "thread-{scenario_id}"`, isolating checkpoints per
 scenario. This enables:
 - **Time travel**: `graph.get_state_history(config)` returns all snapshots for a thread, oldest
   to newest. Any checkpoint can be replayed by passing its `checkpoint_id` in the config.
@@ -163,11 +143,11 @@ agent-lab show-history --config configs/lab.yaml --thread-id thread-S04_risky
 ## 7. Extension work
 
 ### E1 — Real HITL with LangGraph interrupt() + Streamlit UI
-`approval_node` calls `interrupt({{proposed_action, risk_level}})` when `LANGGRAPH_INTERRUPT=true`.
+`approval_node` calls `interrupt({proposed_action, risk_level})` when `LANGGRAPH_INTERRUPT=true`.
 The Streamlit **HITL tab** (`app.py`) implements the full 3-step flow:
 1. Submit risky query → `graph.invoke(state)` pauses at `approval_node`, state saved to SQLite
 2. Streamlit rerenders showing proposed action + Approve/Reject buttons (persisted via `session_state`)
-3. Reviewer clicks → `graph.invoke(Command(resume={{approved, reviewer, comment}}))` resumes graph
+3. Reviewer clicks → `graph.invoke(Command(resume={approved, reviewer, comment}))` resumes graph
 
 ### E2 — Time Travel UI
 The **Time Travel tab** reads `outputs/checkpoints.db` directly to list all thread IDs, then calls
@@ -206,10 +186,3 @@ The `show-history` CLI command prints all checkpoint snapshots for any thread.
 
 4. **Streaming responses**: Switch the Streamlit demo from `graph.invoke()` to `graph.stream()`
    with token-level streaming for LLM answer generation, improving perceived latency for users.
-"""
-
-
-def write_report(metrics: MetricsReport, output_path: str | Path) -> None:
-    path = Path(output_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(render_report(metrics), encoding="utf-8")
