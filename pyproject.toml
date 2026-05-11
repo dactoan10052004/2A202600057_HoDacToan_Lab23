@@ -25,6 +25,8 @@ dev = [
 ]
 sqlite = ["langgraph-checkpoint-sqlite>=2.0"]
 postgres = ["langgraph-checkpoint-postgres>=2.0"]
+llm = ["langchain-openai>=0.3"]
+ui  = ["streamlit>=1.35"]
 
 [project.scripts]
 agent-lab = "langgraph_agent_lab.cli:app"
