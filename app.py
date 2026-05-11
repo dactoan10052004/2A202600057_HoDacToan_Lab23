@@ -437,14 +437,26 @@ with tab_hitl:
 # ════════════════════════════════════════════════════════════════════════════
 with tab_batch:
     st.header("Batch Scenario Run")
-    st.caption(f"Runs all scenarios from `{SCENARIO_PATH}`.")
+
+    SCENARIO_FILES = {
+        "scenarios.jsonl  — 50 scenarios (sample + adversarial)": "data/sample/scenarios.jsonl",
+        "scenarios_hidden.jsonl — 15 hidden grading scenarios":   "data/sample/scenarios_hidden.jsonl",
+    }
+    selected_file_label = st.radio(
+        "Scenario file",
+        list(SCENARIO_FILES.keys()),
+        horizontal=True,
+        key="batch_file_sel",
+    )
+    selected_scenario_path = SCENARIO_FILES[selected_file_label]
+    st.caption(f"Running from `{selected_scenario_path}`")
 
     if st.button("▶  Run All Scenarios", type="primary"):
         _apply_settings(use_llm, api_key, model)
         _build_graph.clear()
 
         try:
-            scenarios = load_scenarios(SCENARIO_PATH)
+            scenarios = load_scenarios(selected_scenario_path)
         except Exception as exc:
             st.error(f"Failed to load scenarios: {exc}")
             st.stop()

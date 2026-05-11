@@ -61,49 +61,49 @@ Other key decisions:
 
 ## 4. Scenario results
 
-> **Note**: 50 scenarios total. 12 marked `requires_llm=true` are skipped in keyword-only mode.
-> The table below shows the 38 scenarios run without LLM.
+> Keyword-only mode (`USE_LLM=false`). Scenarios marked `requires_llm=true` are skipped automatically.
+> The table below shows the 38 scenarios executed.
 
 | Scenario | Expected route | Actual route | Success | Retries | Interrupts | Latency ms |
 |---|---|---|:---:|:---:|:---:|---:|
 | S01_simple | simple | simple | ✅ | 0 | 0 | 9 |
 | S02_tool | tool | tool | ✅ | 0 | 0 | 6 |
-| S03_missing | missing_info | missing_info | ✅ | 0 | 0 | 5 |
-| S04_risky | risky | risky | ✅ | 0 | 1 | 8 |
-| S05_error | error | error | ✅ | 2 | 0 | 10 |
-| S06_delete | risky | risky | ✅ | 0 | 1 | 8 |
+| S03_missing | missing_info | missing_info | ✅ | 0 | 0 | 4 |
+| S04_risky | risky | risky | ✅ | 0 | 1 | 9 |
+| S05_error | error | error | ✅ | 2 | 0 | 9 |
+| S06_delete | risky | risky | ✅ | 0 | 1 | 7 |
 | S07_dead_letter | error | error | ✅ | 1 | 0 | 6 |
-| S08_error_down | error | error | ✅ | 2 | 0 | 9 |
+| S08_error_down | error | error | ✅ | 2 | 0 | 10 |
 | S09_error_timed_out | error | error | ✅ | 2 | 0 | 9 |
 | S10_error_not_responding | error | error | ✅ | 2 | 0 | 10 |
-| S11_error_crashing | error | error | ✅ | 2 | 0 | 11 |
-| S12_error_offline | error | error | ✅ | 2 | 0 | 10 |
-| S14_risky_cancel | risky | risky | ✅ | 0 | 1 | 10 |
-| S15_risky_delete_find | risky | risky | ✅ | 0 | 1 | 10 |
-| S16_missing_vague | missing_info | missing_info | ✅ | 0 | 0 | 4 |
-| S17_risky_suspend | risky | risky | ✅ | 0 | 1 | 9 |
-| S18_risky_unsubscribe | risky | risky | ✅ | 0 | 1 | 9 |
-| S19_risky_block | risky | risky | ✅ | 0 | 1 | 8 |
-| S20_risky_revoking | risky | risky | ✅ | 0 | 1 | 8 |
-| S21_error_unreachable | error | error | ✅ | 2 | 0 | 10 |
-| S22_error_degraded | error | error | ✅ | 2 | 0 | 9 |
-| S23_error_500 | error | error | ✅ | 2 | 0 | 8 |
+| S11_error_crashing | error | error | ✅ | 2 | 0 | 10 |
+| S12_error_offline | error | error | ✅ | 2 | 0 | 11 |
+| S14_risky_cancel | risky | risky | ✅ | 0 | 1 | 9 |
+| S15_risky_delete_find | risky | risky | ✅ | 0 | 1 | 9 |
+| S16_missing_vague | missing_info | missing_info | ✅ | 0 | 0 | 5 |
+| S17_risky_suspend | risky | risky | ✅ | 0 | 1 | 8 |
+| S18_risky_unsubscribe | risky | risky | ✅ | 0 | 1 | 7 |
+| S19_risky_block | risky | risky | ✅ | 0 | 1 | 7 |
+| S20_risky_revoking | risky | risky | ✅ | 0 | 1 | 7 |
+| S21_error_unreachable | error | error | ✅ | 2 | 0 | 9 |
+| S22_error_degraded | error | error | ✅ | 2 | 0 | 10 |
+| S23_error_500 | error | error | ✅ | 2 | 0 | 10 |
 | S24_error_slow | error | error | ✅ | 2 | 0 | 10 |
-| S25_error_refused | error | error | ✅ | 2 | 0 | 10 |
+| S25_error_refused | error | error | ✅ | 2 | 0 | 11 |
 | S26_error_issues | error | error | ✅ | 2 | 0 | 10 |
 | S27_tool_investigate | tool | tool | ✅ | 0 | 0 | 7 |
-| S28_tool_validate | tool | tool | ✅ | 0 | 0 | 9 |
+| S28_tool_validate | tool | tool | ✅ | 0 | 0 | 6 |
 | S29_missing_single | missing_info | missing_info | ✅ | 0 | 0 | 5 |
-| S38_risky_fp_send_statement | tool | tool | ✅ | 0 | 0 | 9 |
-| S39_risky_fp_auto_cancel | error | error | ✅ | 2 | 0 | 12 |
-| S41_risky_fp_send_refund_info | tool | tool | ✅ | 0 | 0 | 8 |
-| S42_risky_fp_drop_message | simple | simple | ✅ | 0 | 0 | 8 |
-| S44_risky_fp_send_button | error | error | ✅ | 2 | 0 | 14 |
-| S45_llm_risky_freeze | risky | risky | ✅ | 0 | 1 | 14 |
-| S46_llm_risky_pause | risky | risky | ✅ | 0 | 1 | 15 |
-| S47_llm_risky_opt_out | risky | risky | ✅ | 0 | 1 | 13 |
-| S48_llm_error_timing_out | error | error | ✅ | 2 | 0 | 13 |
-| S49_llm_error_loading | error | error | ✅ | 2 | 0 | 13 |
+| S38_risky_fp_send_statement | tool | tool | ✅ | 0 | 0 | 6 |
+| S39_risky_fp_auto_cancel | error | error | ✅ | 2 | 0 | 10 |
+| S41_risky_fp_send_refund_info | tool | tool | ✅ | 0 | 0 | 6 |
+| S42_risky_fp_drop_message | simple | simple | ✅ | 0 | 0 | 5 |
+| S44_risky_fp_send_button | error | error | ✅ | 2 | 0 | 10 |
+| S45_llm_risky_freeze | risky | risky | ✅ | 0 | 1 | 8 |
+| S46_llm_risky_pause | risky | risky | ✅ | 0 | 1 | 8 |
+| S47_llm_risky_opt_out | risky | risky | ✅ | 0 | 1 | 8 |
+| S48_llm_error_timing_out | error | error | ✅ | 2 | 0 | 10 |
+| S49_llm_error_loading | error | error | ✅ | 2 | 0 | 9 |
 
 **Summary** (keyword-only mode, `USE_LLM=false`):
 - Scenarios run: **38** (of 50 total)
