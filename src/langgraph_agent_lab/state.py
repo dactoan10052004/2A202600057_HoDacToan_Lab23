@@ -6,9 +6,9 @@ Students should extend the schema only when needed. Keep state lean and serializ
 from __future__ import annotations
 
 from enum import StrEnum
+from operator import add
 from typing import Annotated, Any, TypedDict
 
-from operator import add
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -52,6 +52,7 @@ class AgentState(TypedDict, total=False):
     risk_level: str
     attempt: int
     max_attempts: int
+    classification_method: str | None  # "keyword" | "llm"
     final_answer: str | None
     pending_question: str | None
     proposed_action: str | None
@@ -70,6 +71,7 @@ class Scenario(BaseModel):
     requires_approval: bool = False
     should_retry: bool = False
     max_attempts: int = 3
+    requires_llm: bool = False  # True = keyword classifier blind to this query
     tags: list[str] = Field(default_factory=list)
 
     @field_validator("query")
@@ -93,6 +95,7 @@ def initial_state(scenario: Scenario) -> AgentState:
         "final_answer": None,
         "pending_question": None,
         "proposed_action": None,
+        "classification_method": None,
         "approval": None,
         "evaluation_result": None,
         "messages": [],
@@ -102,6 +105,9 @@ def initial_state(scenario: Scenario) -> AgentState:
     }
 
 
-def make_event(node: str, event_type: str, message: str, **metadata: Any) -> dict[str, Any]:
+def make_event(
+    node: str, event_type: str, message: str, **metadata: Any  # noqa: ANN401
+) -> dict[str, Any]:
     """Create a normalized event payload."""
-    return LabEvent(node=node, event_type=event_type, message=message, metadata=metadata).model_dump()
+    lab_event = LabEvent(node=node, event_type=event_type, message=message, metadata=metadata)
+    return lab_event.model_dump()
