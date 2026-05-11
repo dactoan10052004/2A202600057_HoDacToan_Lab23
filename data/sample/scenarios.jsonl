@@ -5,3 +5,46 @@
 {"id":"S05_error","query":"Timeout failure while processing request","expected_route":"error","requires_approval":false,"should_retry":true,"tags":["retry"]}
 {"id":"S06_delete","query":"Delete customer account after support verification","expected_route":"risky","requires_approval":true,"should_retry":false,"tags":["hitl","destructive"]}
 {"id":"S07_dead_letter","query":"System failure cannot recover after multiple attempts","expected_route":"error","requires_approval":false,"should_retry":true,"max_attempts":1,"tags":["dead_letter","retry"]}
+{"id":"S08_error_down","query":"The production server is down","expected_route":"error","requires_approval":false,"tags":["error","edge","down"]}
+{"id":"S09_error_timed_out","query":"My request timed out please help","expected_route":"error","requires_approval":false,"tags":["error","edge","timed_out"]}
+{"id":"S10_error_not_responding","query":"Payment gateway is not responding","expected_route":"error","requires_approval":false,"tags":["error","edge","not_responding"]}
+{"id":"S11_error_crashing","query":"App keeps crashing on every request","expected_route":"error","requires_approval":false,"tags":["error","edge","morphological"]}
+{"id":"S12_error_offline","query":"The service is offline right now","expected_route":"error","requires_approval":false,"tags":["error","edge","offline"]}
+{"id":"S13_risky_priority","query":"Check status of my refund","expected_route":"tool","requires_approval":false,"requires_llm":true,"tags":["tool","llm_semantic_correct","keyword_differs"]}
+{"id":"S14_risky_cancel","query":"I need to cancel my subscription","expected_route":"risky","requires_approval":true,"tags":["risky","cancel"]}
+{"id":"S15_risky_delete_find","query":"Find and delete old customer records","expected_route":"risky","requires_approval":true,"tags":["risky","priority_conflict"]}
+{"id":"S16_missing_vague","query":"Help me with this","expected_route":"missing_info","requires_approval":false,"tags":["missing_info","vague_pronoun"]}
+{"id":"S17_risky_suspend","query":"Please suspend my account immediately","expected_route":"risky","requires_approval":true,"tags":["risky","suspend"]}
+{"id":"S18_risky_unsubscribe","query":"I need to unsubscribe from all emails","expected_route":"risky","requires_approval":true,"tags":["risky","unsubscribe"]}
+{"id":"S19_risky_block","query":"Block this user from accessing the platform","expected_route":"risky","requires_approval":true,"tags":["risky","block"]}
+{"id":"S20_risky_revoking","query":"Revoking API key for this client","expected_route":"risky","requires_approval":true,"tags":["risky","morphological"]}
+{"id":"S21_error_unreachable","query":"The endpoint is unreachable right now","expected_route":"error","requires_approval":false,"tags":["error","unreachable"]}
+{"id":"S22_error_degraded","query":"Service degraded after the last deploy","expected_route":"error","requires_approval":false,"tags":["error","degraded"]}
+{"id":"S23_error_500","query":"I am getting 500 internal errors on every call","expected_route":"error","requires_approval":false,"tags":["error","500","errors"]}
+{"id":"S24_error_slow","query":"API response is extremely slow right now","expected_route":"error","requires_approval":false,"tags":["error","slow","phrase"]}
+{"id":"S25_error_refused","query":"Database connection refused on all replicas","expected_route":"error","requires_approval":false,"tags":["error","refused","phrase"]}
+{"id":"S26_error_issues","query":"Our system is experiencing issues tonight","expected_route":"error","requires_approval":false,"tags":["error","experiencing_issues","phrase"]}
+{"id":"S27_tool_investigate","query":"Can you investigate the subscription charges?","expected_route":"tool","requires_approval":false,"tags":["tool","investigate"]}
+{"id":"S28_tool_validate","query":"Please validate payment reference 999","expected_route":"tool","requires_approval":false,"tags":["tool","validate"]}
+{"id":"S29_missing_single","query":"Why?","expected_route":"missing_info","requires_approval":false,"tags":["missing_info","single_token"]}
+{"id":"S30_llm_negation_delete","query":"I don't want to delete my account","expected_route":"simple","requires_approval":false,"requires_llm":true,"tags":["llm_required","negation","keyword_false_positive"]}
+{"id":"S31_llm_negation_cancel","query":"Please do not cancel my subscription","expected_route":"simple","requires_approval":false,"requires_llm":true,"tags":["llm_required","negation","keyword_false_positive"]}
+{"id":"S32_llm_word_question","query":"What does the word purge mean in your system?","expected_route":"simple","requires_approval":false,"requires_llm":true,"tags":["llm_required","semantic_simple","keyword_false_positive"]}
+{"id":"S33_llm_semantic_risky","query":"I wish to discontinue my service entirely","expected_route":"risky","requires_approval":true,"requires_llm":true,"tags":["llm_required","semantic_risky","no_keyword"]}
+{"id":"S34_llm_semantic_risky2","query":"My account has been compromised, please lock it","expected_route":"risky","requires_approval":true,"requires_llm":true,"tags":["llm_required","semantic_risky","security"]}
+{"id":"S35_llm_semantic_error","query":"My payment keeps bouncing every time I try","expected_route":"error","requires_approval":false,"requires_llm":true,"tags":["llm_required","semantic_error","no_keyword"]}
+{"id":"S36_llm_semantic_tool","query":"Can someone pull up my account details?","expected_route":"tool","requires_approval":false,"requires_llm":true,"tags":["llm_required","semantic_tool","no_keyword"]}
+{"id":"S37_llm_implied_stop","query":"I would like to stop using your platform","expected_route":"risky","requires_approval":true,"requires_llm":true,"tags":["llm_required","semantic_risky","implied_cancel"]}
+{"id":"S38_risky_fp_send_statement","query":"Can you send me my account statement?","expected_route":"tool","requires_approval":false,"requires_llm":false,"tags":["risky_fp","send","keyword_blind_spot"]}
+{"id":"S39_risky_fp_auto_cancel","query":"The subscription was cancelled by the system automatically","expected_route":"error","requires_approval":false,"requires_llm":false,"tags":["risky_fp","cancelled","passive_voice"]}
+{"id":"S40_risky_fp_blocked_account","query":"My account was blocked without any warning","expected_route":"tool","requires_approval":false,"requires_llm":true,"tags":["risky_fp","blocked","passive_no_agent","llm_needed"]}
+{"id":"S41_risky_fp_send_refund_info","query":"Please send me the refund confirmation number","expected_route":"tool","requires_approval":false,"requires_llm":false,"tags":["risky_fp","send","refund","retrieval_not_action"]}
+{"id":"S42_risky_fp_drop_message","query":"Drop me a message when my ticket is resolved","expected_route":"simple","requires_approval":false,"requires_llm":false,"tags":["risky_fp","drop","idiom"]}
+{"id":"S43_risky_fp_cancelled_report","query":"Report shows 10 transactions were cancelled today","expected_route":"tool","requires_approval":false,"requires_llm":true,"tags":["risky_fp","cancelled","passive_no_agent","llm_needed"]}
+{"id":"S44_risky_fp_send_button","query":"The send button is not working on the contact form","expected_route":"error","requires_approval":false,"requires_llm":false,"tags":["risky_fp","send","ui_bug"]}
+{"id":"S45_llm_risky_freeze","query":"Please freeze my account while I travel","expected_route":"risky","requires_approval":true,"requires_llm":false,"tags":["missing_risky","freeze","keyword_expanded"]}
+{"id":"S46_llm_risky_pause","query":"I need to put my subscription on pause for a month","expected_route":"risky","requires_approval":true,"requires_llm":false,"tags":["missing_risky","pause","keyword_expanded"]}
+{"id":"S47_llm_risky_opt_out","query":"I want to opt out of all your services immediately","expected_route":"risky","requires_approval":true,"requires_llm":false,"tags":["missing_risky","opt_out","phrase_expanded"]}
+{"id":"S48_llm_error_timing_out","query":"My requests keep timing out on the checkout page","expected_route":"error","requires_approval":false,"requires_llm":false,"tags":["missing_error","timeout_variant","phrase_expanded"]}
+{"id":"S49_llm_error_loading","query":"App gets stuck on an infinite loading screen","expected_route":"error","requires_approval":false,"requires_llm":false,"tags":["missing_error","loading","phrase_expanded"]}
+{"id":"S50_llm_missing_vague_fix","query":"Fix the issue in my account please","expected_route":"missing_info","requires_approval":false,"requires_llm":true,"tags":["missing_info","vague","no_pronoun","llm_stress"]}
